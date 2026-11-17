@@ -155,14 +155,36 @@ kbd { font: 11px/1.4 ui-monospace, Menlo, monospace; color: var(--muted); border
 #info .crumb a:hover { color: var(--accent); }
 #info .ex { font-size: 13px; margin-top: 6px; }
 #info .wk { display: flow-root; margin-top: 8px; }  /* text wraps around the floated picture */
-#info .wk img { float: left; margin: 3px 12px 6px 0; width: 130px; max-width: 40%; background: #fff; padding: 3px; border: 1px solid var(--well-edge); border-radius: 3px; box-shadow: 0 2px 6px rgba(0,0,0,.25); }
+#info .wk .pic { float: left; position: relative; margin: 3px 12px 6px 0; width: var(--pic-w, 130px); max-width: 100%; }
+#info .wk img { display: block; width: 100%; box-sizing: border-box; background: #fff; padding: 3px; border: 1px solid var(--well-edge); border-radius: 3px; box-shadow: 0 2px 6px rgba(0,0,0,.25); }
 #info .ety { font-size: 12.5px; color: var(--muted); margin-bottom: 5px; }
 #info .ety b { color: var(--ink); }
 #info .ety .pie { font-size: 12px; opacity: .8; margin-top: 2px; }
 #info .sum { font-size: 13px; }
 #info .sum a { font-size: 12.5px; }
 #info .si { font-size: 12px; color: var(--muted); font-style: italic; margin-top: 4px; }
-@media (max-width: 520px) { #info .wk img { float: none; display: block; margin: 0 0 8px; width: 100%; max-width: 100%; max-height: 180px; object-fit: cover; } }
+#info .pic .rz-pic { right: -5px; bottom: -5px; width: 16px; height: 16px; cursor: nwse-resize; border-radius: 50%; opacity: 0; transition: opacity .15s;
+  background: radial-gradient(circle at 38% 30%, #fff 0 12%, transparent 45%), radial-gradient(circle, #7cc4ff, var(--sel) 80%); border: 1px solid rgba(0,0,0,.35); box-shadow: 0 1px 3px rgba(0,0,0,.4); }
+#info .pic:hover .rz-pic, #info.busy .rz-pic { opacity: 1; }
+@media (max-width: 520px) { #info .wk .pic { float: none; margin: 0 0 8px; width: 100%; } #info .wk img { max-height: 180px; object-fit: cover; } #info .pic .rz-pic { display: none; } }
+
+/* picture dragged out of the description into its own window */
+#info .pic img { cursor: grab; touch-action: none; }
+.pic-drag { position: fixed; z-index: 40; pointer-events: none; opacity: .55; background: #fff; padding: 3px; border-radius: 3px; box-shadow: 0 8px 24px rgba(0,0,0,.45); transition: opacity .12s; }
+.pic-drag.out { opacity: .9; }
+#picwin { position: fixed; z-index: 31; display: none; flex-direction: column; overflow: hidden; border-radius: 8px; }
+#picwin.show { display: flex; }
+#picwin.busy { user-select: none; }
+#picwin.home { opacity: .6; outline: 2px dashed var(--sel); }
+#picwin .grip { display: flex; align-items: center; gap: 6px; padding: 5px 6px 5px 10px; cursor: move; touch-action: none; user-select: none; }
+#picwin .grip h2 { flex: 1; margin: 0; font-size: 13px; font-weight: 700; text-shadow: var(--btn-emboss); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#picwin .grip button { width: 22px; height: 20px; padding: 0; border: 1px solid var(--btn-edge); border-radius: 4px; background: var(--btn); color: var(--ink); cursor: pointer; }
+#picwin .body { padding: 0 8px 8px; cursor: move; touch-action: none; }
+#picwin img { display: block; width: 100%; max-height: 80vh; object-fit: contain; background: #fff; padding: 3px; box-sizing: border-box; border-radius: 3px; border: 1px solid var(--well-edge); -webkit-user-drag: none; }
+#picwin .none { display: none; color: var(--muted); font-size: 12.5px; text-align: center; padding: 18px 0; }
+#picwin.empty img { display: none; } #picwin.empty .none { display: block; }
+#picwin .rz { position: absolute; right: 0; bottom: 0; width: 16px; height: 16px; cursor: nwse-resize; touch-action: none; }
+#picwin .rz::after { content: ''; position: absolute; inset: 3px; opacity: .7; background: linear-gradient(135deg, transparent 0 45%, var(--muted) 45% 52%, transparent 52% 65%, var(--muted) 65% 72%, transparent 72%); }
 
 html, body { height: 100%; }
 body { display: flex; flex-direction: column; background: var(--sky); }
@@ -344,14 +366,36 @@ kbd { font: 11px/1.4 ui-monospace, Menlo, monospace; color: var(--muted); border
 #info .crumb a:hover { color: var(--accent); }
 #info .ex { font-size: 13px; margin-top: 6px; }
 #info .wk { display: flow-root; margin-top: 8px; }  /* text wraps around the floated picture */
-#info .wk img { float: left; margin: 3px 12px 6px 0; width: 130px; max-width: 40%; background: #fff; padding: 3px; border: 1px solid var(--well-edge); border-radius: 3px; box-shadow: 0 2px 6px rgba(0,0,0,.25); }
+#info .wk .pic { float: left; position: relative; margin: 3px 12px 6px 0; width: var(--pic-w, 130px); max-width: 100%; }
+#info .wk img { display: block; width: 100%; box-sizing: border-box; background: #fff; padding: 3px; border: 1px solid var(--well-edge); border-radius: 3px; box-shadow: 0 2px 6px rgba(0,0,0,.25); }
 #info .ety { font-size: 12.5px; color: var(--muted); margin-bottom: 5px; }
 #info .ety b { color: var(--ink); }
 #info .ety .pie { font-size: 12px; opacity: .8; margin-top: 2px; }
 #info .sum { font-size: 13px; }
 #info .sum a { font-size: 12.5px; }
 #info .si { font-size: 12px; color: var(--muted); font-style: italic; margin-top: 4px; }
-@media (max-width: 520px) { #info .wk img { float: none; display: block; margin: 0 0 8px; width: 100%; max-width: 100%; max-height: 180px; object-fit: cover; } }
+#info .pic .rz-pic { right: -5px; bottom: -5px; width: 16px; height: 16px; cursor: nwse-resize; border-radius: 50%; opacity: 0; transition: opacity .15s;
+  background: radial-gradient(circle at 38% 30%, #fff 0 12%, transparent 45%), radial-gradient(circle, #7cc4ff, var(--sel) 80%); border: 1px solid rgba(0,0,0,.35); box-shadow: 0 1px 3px rgba(0,0,0,.4); }
+#info .pic:hover .rz-pic, #info.busy .rz-pic { opacity: 1; }
+@media (max-width: 520px) { #info .wk .pic { float: none; margin: 0 0 8px; width: 100%; } #info .wk img { max-height: 180px; object-fit: cover; } #info .pic .rz-pic { display: none; } }
+
+/* picture dragged out of the description into its own window */
+#info .pic img { cursor: grab; touch-action: none; }
+.pic-drag { position: fixed; z-index: 40; pointer-events: none; opacity: .55; background: #fff; padding: 3px; border-radius: 3px; box-shadow: 0 8px 24px rgba(0,0,0,.45); transition: opacity .12s; }
+.pic-drag.out { opacity: .9; }
+#picwin { position: fixed; z-index: 31; display: none; flex-direction: column; overflow: hidden; border-radius: 8px; }
+#picwin.show { display: flex; }
+#picwin.busy { user-select: none; }
+#picwin.home { opacity: .6; outline: 2px dashed var(--sel); }
+#picwin .grip { display: flex; align-items: center; gap: 6px; padding: 5px 6px 5px 10px; cursor: move; touch-action: none; user-select: none; }
+#picwin .grip h2 { flex: 1; margin: 0; font-size: 13px; font-weight: 700; text-shadow: var(--btn-emboss); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#picwin .grip button { width: 22px; height: 20px; padding: 0; border: 1px solid var(--btn-edge); border-radius: 4px; background: var(--btn); color: var(--ink); cursor: pointer; }
+#picwin .body { padding: 0 8px 8px; cursor: move; touch-action: none; }
+#picwin img { display: block; width: 100%; max-height: 80vh; object-fit: contain; background: #fff; padding: 3px; box-sizing: border-box; border-radius: 3px; border: 1px solid var(--well-edge); -webkit-user-drag: none; }
+#picwin .none { display: none; color: var(--muted); font-size: 12.5px; text-align: center; padding: 18px 0; }
+#picwin.empty img { display: none; } #picwin.empty .none { display: block; }
+#picwin .rz { position: absolute; right: 0; bottom: 0; width: 16px; height: 16px; cursor: nwse-resize; touch-action: none; }
+#picwin .rz::after { content: &#x27;&#x27;; position: absolute; inset: 3px; opacity: .7; background: linear-gradient(135deg, transparent 0 45%, var(--muted) 45% 52%, transparent 52% 65%, var(--muted) 65% 72%, transparent 72%); }
 
 main { max-width: calc(980px + var(--dock-l, 0px) + var(--dock-r, 0px)); margin: 0 auto; padding: 14px calc(16px + var(--dock-r, 0px)) 28px calc(16px + var(--dock-l, 0px)); }
 header { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
@@ -522,8 +566,10 @@ function makeInfoWin({ store, top = () =&gt; 0, onClose = () =&gt; {}, onLayout 
   if (dock === true) dock = &#x27;right&#x27;; if (dock === false) dock = null;  // older saved value
   let pos = store.get(&#x27;infoPos&#x27;, null), size = store.get(&#x27;infoSize&#x27;, null);
   let dockW = store.get(&#x27;infoW&#x27;, 400), dockH = store.get(&#x27;infoH&#x27;, null);  // dockH null = full height
+  let picW = store.get(&#x27;infoPicW&#x27;, 130);  // picture width in the description, dragged from its corner
+  el.style.setProperty(&#x27;--pic-w&#x27;, picW + &#x27;px&#x27;);
   const narrow = () =&gt; innerWidth &lt;= 640;
-  const save = () =&gt; { store.set(&#x27;infoDock&#x27;, dock); store.set(&#x27;infoPos&#x27;, pos); store.set(&#x27;infoSize&#x27;, size); store.set(&#x27;infoW&#x27;, dockW); store.set(&#x27;infoH&#x27;, dockH); };
+  const save = () =&gt; { store.set(&#x27;infoDock&#x27;, dock); store.set(&#x27;infoPos&#x27;, pos); store.set(&#x27;infoSize&#x27;, size); store.set(&#x27;infoW&#x27;, dockW); store.set(&#x27;infoH&#x27;, dockH); store.set(&#x27;infoPicW&#x27;, picW); };
 
   function place() {
     const t = top(), s = el.style;
@@ -558,12 +604,16 @@ function makeInfoWin({ store, top = () =&gt; 0, onClose = () =&gt; {}, onLayout 
       `&lt;div class=&quot;scroll&quot;&gt;${html}&lt;/div&gt;` +
       `&lt;div class=&quot;rz rz-e&quot; title=&quot;Drag to resize&quot;&gt;&lt;/div&gt;&lt;div class=&quot;rz rz-b&quot; title=&quot;Drag to change the height&quot;&gt;&lt;/div&gt;` +
       `&lt;div class=&quot;rz rz-bl&quot; title=&quot;Drag to resize&quot;&gt;&lt;/div&gt;&lt;div class=&quot;rz rz-br&quot; title=&quot;Drag to resize&quot;&gt;&lt;/div&gt;`;
+    last = [title, html];
+    const pic = el.querySelector(&#x27;.scroll .pic&#x27;), src = pic ? pic.querySelector(&#x27;img&#x27;).getAttribute(&#x27;src&#x27;) : &#x27;&#x27;;
+    if (PW.isOut() &amp;&amp; pic) pic.remove();
     el.classList.add(&#x27;show&#x27;); place();
+    PW.set(src, el.querySelector(&#x27;.grip h2&#x27;).textContent);
     el.querySelector(&#x27;.dk&#x27;).onclick = () =&gt; { dock = &#x27;right&#x27;; save(); place(); };
     el.querySelector(&#x27;.x&#x27;).onclick = () =&gt; { hide(); onClose(); };
     return el.querySelector(&#x27;.scroll&#x27;);
   }
-  function hide() { el.classList.remove(&#x27;show&#x27;); place(); }
+  function hide() { el.classList.remove(&#x27;show&#x27;); place(); PW.place(); }
 
   // pointer handling: move, snap, resize
   let act = null;
@@ -572,8 +622,17 @@ function makeInfoWin({ store, top = () =&gt; 0, onClose = () =&gt; {}, onLayout 
   el.addEventListener(&#x27;pointerdown&#x27;, e =&gt; {
     if (e.button) return;
     const b = el.getBoundingClientRect(), h = e.target.closest(&#x27;.rz&#x27;);
-    if (h) act = { kind: [...h.classList].find(c =&gt; c !== &#x27;rz&#x27;).slice(3), x: e.clientX, y: e.clientY, b };
-    else if (e.target.closest(&#x27;.grip&#x27;) &amp;&amp; !e.target.closest(&#x27;button&#x27;)) {
+    const img = e.target.closest(&#x27;.pic img&#x27;);
+    if (h) {
+      act = { kind: [...h.classList].find(c =&gt; c !== &#x27;rz&#x27;).slice(3), x: e.clientX, y: e.clientY, b };
+      if (act.kind === &#x27;pic&#x27;) {  // picture corner: remember its size and the text zoom, so the drag tracks the pointer
+        const sc = el.querySelector(&#x27;.scroll&#x27;);
+        act.w0 = h.parentElement.offsetWidth; act.z = parseFloat(getComputedStyle(sc).zoom) || 1; act.max = sc.clientWidth - 28;
+      }
+    } else if (img) {  // drag the picture itself out of the window to give it a window of its own
+      const r = img.getBoundingClientRect();
+      act = { kind: &#x27;tear&#x27;, x: e.clientX, y: e.clientY, ox: e.clientX - r.left, oy: e.clientY - r.top, w: r.width, src: img.src };
+    } else if (e.target.closest(&#x27;.grip&#x27;) &amp;&amp; !e.target.closest(&#x27;button&#x27;)) {
       if (dock) {  // tear the column off into a window under the pointer
         const w = Math.min(size ? size[0] : 420, innerWidth - 16), fx = Math.min(Math.max(0, e.clientX - w / 2), innerWidth - w);
         dock = null; pos = [fx, b.top]; place();
@@ -594,6 +653,16 @@ function makeInfoWin({ store, top = () =&gt; 0, onClose = () =&gt; {}, onLayout 
       if (z) { ghost.style.top = top() + &#x27;px&#x27;; ghost.style.width = Math.min(dockW, innerWidth - 120) + &#x27;px&#x27;; }
       return;
     }
+    if (act.kind === &#x27;tear&#x27;) {  // a see-through copy follows the pointer; the window itself stays put
+      if (!act.ghost &amp;&amp; Math.hypot(dx, dy) &lt; 6) return;
+      if (!act.ghost) { act.ghost = document.createElement(&#x27;img&#x27;); act.ghost.className = &#x27;pic-drag&#x27;; act.ghost.src = act.src; act.ghost.style.width = act.w + &#x27;px&#x27;; document.body.append(act.ghost); }
+      act.ghost.style.left = (e.clientX - act.ox) + &#x27;px&#x27;; act.ghost.style.top = (e.clientY - act.oy) + &#x27;px&#x27;;
+      act.ghost.classList.toggle(&#x27;out&#x27;, !inside(el, e)); return;
+    }
+    if (act.kind === &#x27;pic&#x27;) {
+      picW = Math.round(Math.max(60, Math.min(act.max, act.w0 + dx / act.z)));
+      el.style.setProperty(&#x27;--pic-w&#x27;, picW + &#x27;px&#x27;); return;
+    }
     if (act.kind === &#x27;e&#x27;) dockW = Math.max(260, Math.min(innerWidth - 120, b.width + (dock === &#x27;left&#x27; ? dx : -dx)));
     else if (act.kind === &#x27;b&#x27;) dockH = Math.max(140, b.height + dy);
     else {  // floating corners
@@ -605,10 +674,72 @@ function makeInfoWin({ store, top = () =&gt; 0, onClose = () =&gt; {}, onLayout 
   const end = e =&gt; {
     if (!act || e.pointerId !== act.id) return;
     if (act.kind === &#x27;move&#x27; &amp;&amp; act.snap) { dock = act.snap; }
+    if (act.kind === &#x27;tear&#x27; &amp;&amp; act.ghost) {
+      act.ghost.remove();
+      if (!inside(el, e)) { PW.open([e.clientX - act.ox, e.clientY - act.oy], Math.max(act.w, 220)); }
+    }
     if (act.kind === &#x27;b&#x27; &amp;&amp; dockH &gt;= innerHeight - top() - 4) dockH = null;  // dragged back to the bottom: full height again
     ghost.className = &#x27;snap-ghost&#x27;; el.classList.remove(&#x27;busy&#x27;); act = null; save(); place();
   };
   el.addEventListener(&#x27;pointerup&#x27;, end); el.addEventListener(&#x27;pointercancel&#x27;, end);
+
+  /* The picture window: once you drag a picture out, pictures show here instead of in the description.
+     Drag its title bar to move it, its corner to resize it; drop it back on the description (or press ↩) to put pictures back. */
+  const inside = (box, e) =&gt; { const r = box.getBoundingClientRect(); return box.classList.contains(&#x27;show&#x27;) &amp;&amp; e.clientX &gt;= r.left &amp;&amp; e.clientX &lt;= r.right &amp;&amp; e.clientY &gt;= r.top &amp;&amp; e.clientY &lt;= r.bottom; };
+  const PW = (() =&gt; {
+    const w = document.createElement(&#x27;div&#x27;); w.id = &#x27;picwin&#x27;; w.className = &#x27;glass&#x27;;
+    w.innerHTML = `&lt;div class=&quot;grip&quot; title=&quot;Drag to move · drop it on the description to put pictures back&quot;&gt;&lt;h2&gt;&lt;/h2&gt;&lt;button class=&quot;back&quot; title=&quot;Put pictures back in the description&quot;&gt;↩&lt;/button&gt;&lt;/div&gt;` +
+      `&lt;div class=&quot;body&quot;&gt;&lt;img alt=&quot;&quot;&gt;&lt;div class=&quot;none&quot;&gt;No picture&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;rz rz-br&quot; title=&quot;Drag to resize&quot;&gt;&lt;/div&gt;`;
+    document.body.append(w);
+    let out = store.get(&#x27;picOut&#x27;, false), ppos = store.get(&#x27;picPos&#x27;, null), pw = store.get(&#x27;picWinW&#x27;, 260), cur = { src: &#x27;&#x27;, title: &#x27;&#x27; };
+    const im = w.querySelector(&#x27;img&#x27;);
+    im.onerror = () =&gt; w.classList.add(&#x27;empty&#x27;);
+    const save = () =&gt; { store.set(&#x27;picOut&#x27;, out); store.set(&#x27;picPos&#x27;, ppos); store.set(&#x27;picWinW&#x27;, pw); };
+    function place() {
+      const on = out &amp;&amp; el.classList.contains(&#x27;show&#x27;);
+      w.classList.toggle(&#x27;show&#x27;, on); el.classList.toggle(&#x27;pic-out&#x27;, out);
+      if (!on) return;
+      const ww = Math.min(pw, innerWidth - 16), p = ppos || [16, top() + 16];
+      w.style.width = ww + &#x27;px&#x27;;
+      w.style.left = Math.min(Math.max(0, p[0]), innerWidth - ww) + &#x27;px&#x27;;
+      w.style.top = Math.min(Math.max(0, p[1]), innerHeight - 60) + &#x27;px&#x27;;
+    }
+    function set(src, title) {
+      cur = { src, title }; w.querySelector(&#x27;h2&#x27;).textContent = title;
+      w.classList.toggle(&#x27;empty&#x27;, !src); if (src) im.src = src; else im.removeAttribute(&#x27;src&#x27;);
+      place();
+    }
+    let a = null;
+    w.addEventListener(&#x27;pointerdown&#x27;, e =&gt; {
+      if (e.button || e.target.closest(&#x27;button&#x27;)) return;
+      const r = w.getBoundingClientRect();
+      if (e.target.closest(&#x27;.rz&#x27;)) a = { kind: &#x27;size&#x27;, x: e.clientX, w0: r.width };
+      else if (e.target.closest(&#x27;.grip&#x27;) || e.target.closest(&#x27;.body&#x27;)) a = { kind: &#x27;move&#x27;, dx: e.clientX - r.left, dy: e.clientY - r.top };
+      else return;
+      a.id = e.pointerId; w.classList.add(&#x27;busy&#x27;); w.setPointerCapture(e.pointerId); e.preventDefault();
+    });
+    w.addEventListener(&#x27;pointermove&#x27;, e =&gt; {
+      if (!a || e.pointerId !== a.id) return;
+      if (a.kind === &#x27;size&#x27;) pw = Math.round(Math.max(140, Math.min(innerWidth - 16, a.w0 + e.clientX - a.x)));
+      else { ppos = [e.clientX - a.dx, e.clientY - a.dy]; w.classList.toggle(&#x27;home&#x27;, inside(el, e)); }
+      place();
+    });
+    const up = e =&gt; {
+      if (!a || e.pointerId !== a.id) return;
+      const back = a.kind === &#x27;move&#x27; &amp;&amp; inside(el, e);
+      a = null; w.classList.remove(&#x27;busy&#x27;, &#x27;home&#x27;);
+      if (back) { out = false; save(); place(); reshow(); } else { save(); place(); }
+    };
+    w.addEventListener(&#x27;pointerup&#x27;, up); w.addEventListener(&#x27;pointercancel&#x27;, up);
+    w.querySelector(&#x27;.back&#x27;).onclick = () =&gt; { out = false; save(); place(); reshow(); };
+    addEventListener(&#x27;resize&#x27;, place);
+    return {
+      isOut: () =&gt; out, set, place,
+      open(p, width) { out = true; ppos = p; pw = width; save(); reshow(); }
+    };
+  })();
+  let last = null;  // the last description, so moving the picture in or out can redraw it
+  function reshow() { if (last &amp;&amp; el.classList.contains(&#x27;show&#x27;)) show(...last); }
   addEventListener(&#x27;resize&#x27;, place);
   place();
   return { el, show, hide, place, isOpen: () =&gt; el.classList.contains(&#x27;show&#x27;),
@@ -649,7 +780,7 @@ function infoHTML(G, x, { noun = &#x27;animals&#x27;, members = true } = {}) {
   }
   // etymology lines are our own trusted HTML from the build
   const ety = n.e ? `&lt;div class=&quot;ety&quot;&gt;${n.e}${n.ep ? `&lt;div class=&quot;pie&quot;&gt;${n.ep}&lt;/div&gt;` : &#x27;&#x27;}&lt;/div&gt;` : &#x27;&#x27;;
-  const wk = (n.x || n.i || ety) ? `&lt;div class=&quot;wk&quot;&gt;${n.i ? `&lt;img src=&quot;${n.i}&quot; alt=&quot;&quot; onerror=&quot;this.remove()&quot;&gt;` : &#x27;&#x27;}&lt;div&gt;${ety}` +
+  const wk = (n.x || n.i || ety) ? `&lt;div class=&quot;wk&quot;&gt;${n.i ? `&lt;span class=&quot;pic&quot;&gt;&lt;img src=&quot;${n.i}&quot; alt=&quot;&quot; onerror=&quot;this.parentNode.remove()&quot;&gt;&lt;span class=&quot;rz rz-pic&quot; title=&quot;Drag to resize the picture&quot;&gt;&lt;/span&gt;&lt;/span&gt;` : &#x27;&#x27;}&lt;div&gt;${ety}` +
     (n.x ? `&lt;div class=&quot;sum&quot;&gt;${esc(n.x)}${n.u ? ` &lt;a href=&quot;${esc(n.u)}&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Wikipedia →&lt;/a&gt;` : &#x27;&#x27;}&lt;/div&gt;` : &#x27;&#x27;) +
     (n.si ? `&lt;div class=&quot;si&quot;&gt;No Wikipedia article for ${esc(nm(x))}; showing ${esc(n.si)}.&lt;/div&gt;` : &#x27;&#x27;) + `&lt;/div&gt;&lt;/div&gt;` : &#x27;&#x27;;
   return `${body}${wk}&lt;div class=&quot;crumb&quot;&gt;${crumb || &#x27;Top of the tree&#x27;}&lt;/div&gt;`;
@@ -1127,14 +1258,36 @@ kbd { font: 11px/1.4 ui-monospace, Menlo, monospace; color: var(--muted); border
 #info .crumb a:hover { color: var(--accent); }
 #info .ex { font-size: 13px; margin-top: 6px; }
 #info .wk { display: flow-root; margin-top: 8px; }  /* text wraps around the floated picture */
-#info .wk img { float: left; margin: 3px 12px 6px 0; width: 130px; max-width: 40%; background: #fff; padding: 3px; border: 1px solid var(--well-edge); border-radius: 3px; box-shadow: 0 2px 6px rgba(0,0,0,.25); }
+#info .wk .pic { float: left; position: relative; margin: 3px 12px 6px 0; width: var(--pic-w, 130px); max-width: 100%; }
+#info .wk img { display: block; width: 100%; box-sizing: border-box; background: #fff; padding: 3px; border: 1px solid var(--well-edge); border-radius: 3px; box-shadow: 0 2px 6px rgba(0,0,0,.25); }
 #info .ety { font-size: 12.5px; color: var(--muted); margin-bottom: 5px; }
 #info .ety b { color: var(--ink); }
 #info .ety .pie { font-size: 12px; opacity: .8; margin-top: 2px; }
 #info .sum { font-size: 13px; }
 #info .sum a { font-size: 12.5px; }
 #info .si { font-size: 12px; color: var(--muted); font-style: italic; margin-top: 4px; }
-@media (max-width: 520px) { #info .wk img { float: none; display: block; margin: 0 0 8px; width: 100%; max-width: 100%; max-height: 180px; object-fit: cover; } }
+#info .pic .rz-pic { right: -5px; bottom: -5px; width: 16px; height: 16px; cursor: nwse-resize; border-radius: 50%; opacity: 0; transition: opacity .15s;
+  background: radial-gradient(circle at 38% 30%, #fff 0 12%, transparent 45%), radial-gradient(circle, #7cc4ff, var(--sel) 80%); border: 1px solid rgba(0,0,0,.35); box-shadow: 0 1px 3px rgba(0,0,0,.4); }
+#info .pic:hover .rz-pic, #info.busy .rz-pic { opacity: 1; }
+@media (max-width: 520px) { #info .wk .pic { float: none; margin: 0 0 8px; width: 100%; } #info .wk img { max-height: 180px; object-fit: cover; } #info .pic .rz-pic { display: none; } }
+
+/* picture dragged out of the description into its own window */
+#info .pic img { cursor: grab; touch-action: none; }
+.pic-drag { position: fixed; z-index: 40; pointer-events: none; opacity: .55; background: #fff; padding: 3px; border-radius: 3px; box-shadow: 0 8px 24px rgba(0,0,0,.45); transition: opacity .12s; }
+.pic-drag.out { opacity: .9; }
+#picwin { position: fixed; z-index: 31; display: none; flex-direction: column; overflow: hidden; border-radius: 8px; }
+#picwin.show { display: flex; }
+#picwin.busy { user-select: none; }
+#picwin.home { opacity: .6; outline: 2px dashed var(--sel); }
+#picwin .grip { display: flex; align-items: center; gap: 6px; padding: 5px 6px 5px 10px; cursor: move; touch-action: none; user-select: none; }
+#picwin .grip h2 { flex: 1; margin: 0; font-size: 13px; font-weight: 700; text-shadow: var(--btn-emboss); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#picwin .grip button { width: 22px; height: 20px; padding: 0; border: 1px solid var(--btn-edge); border-radius: 4px; background: var(--btn); color: var(--ink); cursor: pointer; }
+#picwin .body { padding: 0 8px 8px; cursor: move; touch-action: none; }
+#picwin img { display: block; width: 100%; max-height: 80vh; object-fit: contain; background: #fff; padding: 3px; box-sizing: border-box; border-radius: 3px; border: 1px solid var(--well-edge); -webkit-user-drag: none; }
+#picwin .none { display: none; color: var(--muted); font-size: 12.5px; text-align: center; padding: 18px 0; }
+#picwin.empty img { display: none; } #picwin.empty .none { display: block; }
+#picwin .rz { position: absolute; right: 0; bottom: 0; width: 16px; height: 16px; cursor: nwse-resize; touch-action: none; }
+#picwin .rz::after { content: &#x27;&#x27;; position: absolute; inset: 3px; opacity: .7; background: linear-gradient(135deg, transparent 0 45%, var(--muted) 45% 52%, transparent 52% 65%, var(--muted) 65% 72%, transparent 72%); }
 
 main { max-width: 1100px; margin: 0 auto; padding: 14px 16px 28px; }
 header { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
@@ -1766,14 +1919,36 @@ kbd { font: 11px/1.4 ui-monospace, Menlo, monospace; color: var(--muted); border
 #info .crumb a:hover { color: var(--accent); }
 #info .ex { font-size: 13px; margin-top: 6px; }
 #info .wk { display: flow-root; margin-top: 8px; }  /* text wraps around the floated picture */
-#info .wk img { float: left; margin: 3px 12px 6px 0; width: 130px; max-width: 40%; background: #fff; padding: 3px; border: 1px solid var(--well-edge); border-radius: 3px; box-shadow: 0 2px 6px rgba(0,0,0,.25); }
+#info .wk .pic { float: left; position: relative; margin: 3px 12px 6px 0; width: var(--pic-w, 130px); max-width: 100%; }
+#info .wk img { display: block; width: 100%; box-sizing: border-box; background: #fff; padding: 3px; border: 1px solid var(--well-edge); border-radius: 3px; box-shadow: 0 2px 6px rgba(0,0,0,.25); }
 #info .ety { font-size: 12.5px; color: var(--muted); margin-bottom: 5px; }
 #info .ety b { color: var(--ink); }
 #info .ety .pie { font-size: 12px; opacity: .8; margin-top: 2px; }
 #info .sum { font-size: 13px; }
 #info .sum a { font-size: 12.5px; }
 #info .si { font-size: 12px; color: var(--muted); font-style: italic; margin-top: 4px; }
-@media (max-width: 520px) { #info .wk img { float: none; display: block; margin: 0 0 8px; width: 100%; max-width: 100%; max-height: 180px; object-fit: cover; } }
+#info .pic .rz-pic { right: -5px; bottom: -5px; width: 16px; height: 16px; cursor: nwse-resize; border-radius: 50%; opacity: 0; transition: opacity .15s;
+  background: radial-gradient(circle at 38% 30%, #fff 0 12%, transparent 45%), radial-gradient(circle, #7cc4ff, var(--sel) 80%); border: 1px solid rgba(0,0,0,.35); box-shadow: 0 1px 3px rgba(0,0,0,.4); }
+#info .pic:hover .rz-pic, #info.busy .rz-pic { opacity: 1; }
+@media (max-width: 520px) { #info .wk .pic { float: none; margin: 0 0 8px; width: 100%; } #info .wk img { max-height: 180px; object-fit: cover; } #info .pic .rz-pic { display: none; } }
+
+/* picture dragged out of the description into its own window */
+#info .pic img { cursor: grab; touch-action: none; }
+.pic-drag { position: fixed; z-index: 40; pointer-events: none; opacity: .55; background: #fff; padding: 3px; border-radius: 3px; box-shadow: 0 8px 24px rgba(0,0,0,.45); transition: opacity .12s; }
+.pic-drag.out { opacity: .9; }
+#picwin { position: fixed; z-index: 31; display: none; flex-direction: column; overflow: hidden; border-radius: 8px; }
+#picwin.show { display: flex; }
+#picwin.busy { user-select: none; }
+#picwin.home { opacity: .6; outline: 2px dashed var(--sel); }
+#picwin .grip { display: flex; align-items: center; gap: 6px; padding: 5px 6px 5px 10px; cursor: move; touch-action: none; user-select: none; }
+#picwin .grip h2 { flex: 1; margin: 0; font-size: 13px; font-weight: 700; text-shadow: var(--btn-emboss); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#picwin .grip button { width: 22px; height: 20px; padding: 0; border: 1px solid var(--btn-edge); border-radius: 4px; background: var(--btn); color: var(--ink); cursor: pointer; }
+#picwin .body { padding: 0 8px 8px; cursor: move; touch-action: none; }
+#picwin img { display: block; width: 100%; max-height: 80vh; object-fit: contain; background: #fff; padding: 3px; box-sizing: border-box; border-radius: 3px; border: 1px solid var(--well-edge); -webkit-user-drag: none; }
+#picwin .none { display: none; color: var(--muted); font-size: 12.5px; text-align: center; padding: 18px 0; }
+#picwin.empty img { display: none; } #picwin.empty .none { display: block; }
+#picwin .rz { position: absolute; right: 0; bottom: 0; width: 16px; height: 16px; cursor: nwse-resize; touch-action: none; }
+#picwin .rz::after { content: &#x27;&#x27;; position: absolute; inset: 3px; opacity: .7; background: linear-gradient(135deg, transparent 0 45%, var(--muted) 45% 52%, transparent 52% 65%, var(--muted) 65% 72%, transparent 72%); }
 
 html, body { height: 100%; overflow: hidden; }
 header { position: fixed; top: 0; left: 0; right: 0; z-index: 4; display: flex; gap: 8px 10px; align-items: center; flex-wrap: wrap;
@@ -1858,8 +2033,10 @@ function makeInfoWin({ store, top = () =&gt; 0, onClose = () =&gt; {}, onLayout 
   if (dock === true) dock = &#x27;right&#x27;; if (dock === false) dock = null;  // older saved value
   let pos = store.get(&#x27;infoPos&#x27;, null), size = store.get(&#x27;infoSize&#x27;, null);
   let dockW = store.get(&#x27;infoW&#x27;, 400), dockH = store.get(&#x27;infoH&#x27;, null);  // dockH null = full height
+  let picW = store.get(&#x27;infoPicW&#x27;, 130);  // picture width in the description, dragged from its corner
+  el.style.setProperty(&#x27;--pic-w&#x27;, picW + &#x27;px&#x27;);
   const narrow = () =&gt; innerWidth &lt;= 640;
-  const save = () =&gt; { store.set(&#x27;infoDock&#x27;, dock); store.set(&#x27;infoPos&#x27;, pos); store.set(&#x27;infoSize&#x27;, size); store.set(&#x27;infoW&#x27;, dockW); store.set(&#x27;infoH&#x27;, dockH); };
+  const save = () =&gt; { store.set(&#x27;infoDock&#x27;, dock); store.set(&#x27;infoPos&#x27;, pos); store.set(&#x27;infoSize&#x27;, size); store.set(&#x27;infoW&#x27;, dockW); store.set(&#x27;infoH&#x27;, dockH); store.set(&#x27;infoPicW&#x27;, picW); };
 
   function place() {
     const t = top(), s = el.style;
@@ -1894,12 +2071,16 @@ function makeInfoWin({ store, top = () =&gt; 0, onClose = () =&gt; {}, onLayout 
       `&lt;div class=&quot;scroll&quot;&gt;${html}&lt;/div&gt;` +
       `&lt;div class=&quot;rz rz-e&quot; title=&quot;Drag to resize&quot;&gt;&lt;/div&gt;&lt;div class=&quot;rz rz-b&quot; title=&quot;Drag to change the height&quot;&gt;&lt;/div&gt;` +
       `&lt;div class=&quot;rz rz-bl&quot; title=&quot;Drag to resize&quot;&gt;&lt;/div&gt;&lt;div class=&quot;rz rz-br&quot; title=&quot;Drag to resize&quot;&gt;&lt;/div&gt;`;
+    last = [title, html];
+    const pic = el.querySelector(&#x27;.scroll .pic&#x27;), src = pic ? pic.querySelector(&#x27;img&#x27;).getAttribute(&#x27;src&#x27;) : &#x27;&#x27;;
+    if (PW.isOut() &amp;&amp; pic) pic.remove();
     el.classList.add(&#x27;show&#x27;); place();
+    PW.set(src, el.querySelector(&#x27;.grip h2&#x27;).textContent);
     el.querySelector(&#x27;.dk&#x27;).onclick = () =&gt; { dock = &#x27;right&#x27;; save(); place(); };
     el.querySelector(&#x27;.x&#x27;).onclick = () =&gt; { hide(); onClose(); };
     return el.querySelector(&#x27;.scroll&#x27;);
   }
-  function hide() { el.classList.remove(&#x27;show&#x27;); place(); }
+  function hide() { el.classList.remove(&#x27;show&#x27;); place(); PW.place(); }
 
   // pointer handling: move, snap, resize
   let act = null;
@@ -1908,8 +2089,17 @@ function makeInfoWin({ store, top = () =&gt; 0, onClose = () =&gt; {}, onLayout 
   el.addEventListener(&#x27;pointerdown&#x27;, e =&gt; {
     if (e.button) return;
     const b = el.getBoundingClientRect(), h = e.target.closest(&#x27;.rz&#x27;);
-    if (h) act = { kind: [...h.classList].find(c =&gt; c !== &#x27;rz&#x27;).slice(3), x: e.clientX, y: e.clientY, b };
-    else if (e.target.closest(&#x27;.grip&#x27;) &amp;&amp; !e.target.closest(&#x27;button&#x27;)) {
+    const img = e.target.closest(&#x27;.pic img&#x27;);
+    if (h) {
+      act = { kind: [...h.classList].find(c =&gt; c !== &#x27;rz&#x27;).slice(3), x: e.clientX, y: e.clientY, b };
+      if (act.kind === &#x27;pic&#x27;) {  // picture corner: remember its size and the text zoom, so the drag tracks the pointer
+        const sc = el.querySelector(&#x27;.scroll&#x27;);
+        act.w0 = h.parentElement.offsetWidth; act.z = parseFloat(getComputedStyle(sc).zoom) || 1; act.max = sc.clientWidth - 28;
+      }
+    } else if (img) {  // drag the picture itself out of the window to give it a window of its own
+      const r = img.getBoundingClientRect();
+      act = { kind: &#x27;tear&#x27;, x: e.clientX, y: e.clientY, ox: e.clientX - r.left, oy: e.clientY - r.top, w: r.width, src: img.src };
+    } else if (e.target.closest(&#x27;.grip&#x27;) &amp;&amp; !e.target.closest(&#x27;button&#x27;)) {
       if (dock) {  // tear the column off into a window under the pointer
         const w = Math.min(size ? size[0] : 420, innerWidth - 16), fx = Math.min(Math.max(0, e.clientX - w / 2), innerWidth - w);
         dock = null; pos = [fx, b.top]; place();
@@ -1930,6 +2120,16 @@ function makeInfoWin({ store, top = () =&gt; 0, onClose = () =&gt; {}, onLayout 
       if (z) { ghost.style.top = top() + &#x27;px&#x27;; ghost.style.width = Math.min(dockW, innerWidth - 120) + &#x27;px&#x27;; }
       return;
     }
+    if (act.kind === &#x27;tear&#x27;) {  // a see-through copy follows the pointer; the window itself stays put
+      if (!act.ghost &amp;&amp; Math.hypot(dx, dy) &lt; 6) return;
+      if (!act.ghost) { act.ghost = document.createElement(&#x27;img&#x27;); act.ghost.className = &#x27;pic-drag&#x27;; act.ghost.src = act.src; act.ghost.style.width = act.w + &#x27;px&#x27;; document.body.append(act.ghost); }
+      act.ghost.style.left = (e.clientX - act.ox) + &#x27;px&#x27;; act.ghost.style.top = (e.clientY - act.oy) + &#x27;px&#x27;;
+      act.ghost.classList.toggle(&#x27;out&#x27;, !inside(el, e)); return;
+    }
+    if (act.kind === &#x27;pic&#x27;) {
+      picW = Math.round(Math.max(60, Math.min(act.max, act.w0 + dx / act.z)));
+      el.style.setProperty(&#x27;--pic-w&#x27;, picW + &#x27;px&#x27;); return;
+    }
     if (act.kind === &#x27;e&#x27;) dockW = Math.max(260, Math.min(innerWidth - 120, b.width + (dock === &#x27;left&#x27; ? dx : -dx)));
     else if (act.kind === &#x27;b&#x27;) dockH = Math.max(140, b.height + dy);
     else {  // floating corners
@@ -1941,10 +2141,72 @@ function makeInfoWin({ store, top = () =&gt; 0, onClose = () =&gt; {}, onLayout 
   const end = e =&gt; {
     if (!act || e.pointerId !== act.id) return;
     if (act.kind === &#x27;move&#x27; &amp;&amp; act.snap) { dock = act.snap; }
+    if (act.kind === &#x27;tear&#x27; &amp;&amp; act.ghost) {
+      act.ghost.remove();
+      if (!inside(el, e)) { PW.open([e.clientX - act.ox, e.clientY - act.oy], Math.max(act.w, 220)); }
+    }
     if (act.kind === &#x27;b&#x27; &amp;&amp; dockH &gt;= innerHeight - top() - 4) dockH = null;  // dragged back to the bottom: full height again
     ghost.className = &#x27;snap-ghost&#x27;; el.classList.remove(&#x27;busy&#x27;); act = null; save(); place();
   };
   el.addEventListener(&#x27;pointerup&#x27;, end); el.addEventListener(&#x27;pointercancel&#x27;, end);
+
+  /* The picture window: once you drag a picture out, pictures show here instead of in the description.
+     Drag its title bar to move it, its corner to resize it; drop it back on the description (or press ↩) to put pictures back. */
+  const inside = (box, e) =&gt; { const r = box.getBoundingClientRect(); return box.classList.contains(&#x27;show&#x27;) &amp;&amp; e.clientX &gt;= r.left &amp;&amp; e.clientX &lt;= r.right &amp;&amp; e.clientY &gt;= r.top &amp;&amp; e.clientY &lt;= r.bottom; };
+  const PW = (() =&gt; {
+    const w = document.createElement(&#x27;div&#x27;); w.id = &#x27;picwin&#x27;; w.className = &#x27;glass&#x27;;
+    w.innerHTML = `&lt;div class=&quot;grip&quot; title=&quot;Drag to move · drop it on the description to put pictures back&quot;&gt;&lt;h2&gt;&lt;/h2&gt;&lt;button class=&quot;back&quot; title=&quot;Put pictures back in the description&quot;&gt;↩&lt;/button&gt;&lt;/div&gt;` +
+      `&lt;div class=&quot;body&quot;&gt;&lt;img alt=&quot;&quot;&gt;&lt;div class=&quot;none&quot;&gt;No picture&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;rz rz-br&quot; title=&quot;Drag to resize&quot;&gt;&lt;/div&gt;`;
+    document.body.append(w);
+    let out = store.get(&#x27;picOut&#x27;, false), ppos = store.get(&#x27;picPos&#x27;, null), pw = store.get(&#x27;picWinW&#x27;, 260), cur = { src: &#x27;&#x27;, title: &#x27;&#x27; };
+    const im = w.querySelector(&#x27;img&#x27;);
+    im.onerror = () =&gt; w.classList.add(&#x27;empty&#x27;);
+    const save = () =&gt; { store.set(&#x27;picOut&#x27;, out); store.set(&#x27;picPos&#x27;, ppos); store.set(&#x27;picWinW&#x27;, pw); };
+    function place() {
+      const on = out &amp;&amp; el.classList.contains(&#x27;show&#x27;);
+      w.classList.toggle(&#x27;show&#x27;, on); el.classList.toggle(&#x27;pic-out&#x27;, out);
+      if (!on) return;
+      const ww = Math.min(pw, innerWidth - 16), p = ppos || [16, top() + 16];
+      w.style.width = ww + &#x27;px&#x27;;
+      w.style.left = Math.min(Math.max(0, p[0]), innerWidth - ww) + &#x27;px&#x27;;
+      w.style.top = Math.min(Math.max(0, p[1]), innerHeight - 60) + &#x27;px&#x27;;
+    }
+    function set(src, title) {
+      cur = { src, title }; w.querySelector(&#x27;h2&#x27;).textContent = title;
+      w.classList.toggle(&#x27;empty&#x27;, !src); if (src) im.src = src; else im.removeAttribute(&#x27;src&#x27;);
+      place();
+    }
+    let a = null;
+    w.addEventListener(&#x27;pointerdown&#x27;, e =&gt; {
+      if (e.button || e.target.closest(&#x27;button&#x27;)) return;
+      const r = w.getBoundingClientRect();
+      if (e.target.closest(&#x27;.rz&#x27;)) a = { kind: &#x27;size&#x27;, x: e.clientX, w0: r.width };
+      else if (e.target.closest(&#x27;.grip&#x27;) || e.target.closest(&#x27;.body&#x27;)) a = { kind: &#x27;move&#x27;, dx: e.clientX - r.left, dy: e.clientY - r.top };
+      else return;
+      a.id = e.pointerId; w.classList.add(&#x27;busy&#x27;); w.setPointerCapture(e.pointerId); e.preventDefault();
+    });
+    w.addEventListener(&#x27;pointermove&#x27;, e =&gt; {
+      if (!a || e.pointerId !== a.id) return;
+      if (a.kind === &#x27;size&#x27;) pw = Math.round(Math.max(140, Math.min(innerWidth - 16, a.w0 + e.clientX - a.x)));
+      else { ppos = [e.clientX - a.dx, e.clientY - a.dy]; w.classList.toggle(&#x27;home&#x27;, inside(el, e)); }
+      place();
+    });
+    const up = e =&gt; {
+      if (!a || e.pointerId !== a.id) return;
+      const back = a.kind === &#x27;move&#x27; &amp;&amp; inside(el, e);
+      a = null; w.classList.remove(&#x27;busy&#x27;, &#x27;home&#x27;);
+      if (back) { out = false; save(); place(); reshow(); } else { save(); place(); }
+    };
+    w.addEventListener(&#x27;pointerup&#x27;, up); w.addEventListener(&#x27;pointercancel&#x27;, up);
+    w.querySelector(&#x27;.back&#x27;).onclick = () =&gt; { out = false; save(); place(); reshow(); };
+    addEventListener(&#x27;resize&#x27;, place);
+    return {
+      isOut: () =&gt; out, set, place,
+      open(p, width) { out = true; ppos = p; pw = width; save(); reshow(); }
+    };
+  })();
+  let last = null;  // the last description, so moving the picture in or out can redraw it
+  function reshow() { if (last &amp;&amp; el.classList.contains(&#x27;show&#x27;)) show(...last); }
   addEventListener(&#x27;resize&#x27;, place);
   place();
   return { el, show, hide, place, isOpen: () =&gt; el.classList.contains(&#x27;show&#x27;),
@@ -1985,7 +2247,7 @@ function infoHTML(G, x, { noun = &#x27;animals&#x27;, members = true } = {}) {
   }
   // etymology lines are our own trusted HTML from the build
   const ety = n.e ? `&lt;div class=&quot;ety&quot;&gt;${n.e}${n.ep ? `&lt;div class=&quot;pie&quot;&gt;${n.ep}&lt;/div&gt;` : &#x27;&#x27;}&lt;/div&gt;` : &#x27;&#x27;;
-  const wk = (n.x || n.i || ety) ? `&lt;div class=&quot;wk&quot;&gt;${n.i ? `&lt;img src=&quot;${n.i}&quot; alt=&quot;&quot; onerror=&quot;this.remove()&quot;&gt;` : &#x27;&#x27;}&lt;div&gt;${ety}` +
+  const wk = (n.x || n.i || ety) ? `&lt;div class=&quot;wk&quot;&gt;${n.i ? `&lt;span class=&quot;pic&quot;&gt;&lt;img src=&quot;${n.i}&quot; alt=&quot;&quot; onerror=&quot;this.parentNode.remove()&quot;&gt;&lt;span class=&quot;rz rz-pic&quot; title=&quot;Drag to resize the picture&quot;&gt;&lt;/span&gt;&lt;/span&gt;` : &#x27;&#x27;}&lt;div&gt;${ety}` +
     (n.x ? `&lt;div class=&quot;sum&quot;&gt;${esc(n.x)}${n.u ? ` &lt;a href=&quot;${esc(n.u)}&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Wikipedia →&lt;/a&gt;` : &#x27;&#x27;}&lt;/div&gt;` : &#x27;&#x27;) +
     (n.si ? `&lt;div class=&quot;si&quot;&gt;No Wikipedia article for ${esc(nm(x))}; showing ${esc(n.si)}.&lt;/div&gt;` : &#x27;&#x27;) + `&lt;/div&gt;&lt;/div&gt;` : &#x27;&#x27;;
   return `${body}${wk}&lt;div class=&quot;crumb&quot;&gt;${crumb || &#x27;Top of the tree&#x27;}&lt;/div&gt;`;
