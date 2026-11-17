@@ -615,6 +615,17 @@ function makeInfoWin({ store, top = () =&gt; 0, onClose = () =&gt; {}, onLayout 
     dockSide: () =&gt; (el.classList.contains(&#x27;show&#x27;) &amp;&amp; dock &amp;&amp; !narrow()) ? dock : null, width: () =&gt; el.offsetWidth };
 }
 
+/* Warm the browser cache with the pictures of nodes you&#x27;re likely to open next, so they show instantly. */
+const PRELOADED = new Map();
+function preloadPics(G, ids) {
+  for (const id of ids) {
+    const n = id &amp;&amp; (G.nodes[id] || G.leaves[id]);
+    if (!n || !n.i || PRELOADED.has(n.i)) continue;
+    const im = new Image(); im.decoding = &#x27;async&#x27;; im.src = n.i; PRELOADED.set(n.i, im);
+    if (PRELOADED.size &gt; 400) PRELOADED.delete(PRELOADED.keys().next().value);  // the browser cache keeps them; this just caps the list
+  }
+}
+
 /* Shared description: Wikipedia summary, picture, etymology, lineage. opts.members=false hides the example animal list. */
 function infoHTML(G, x, { noun = &#x27;animals&#x27;, members = true } = {}) {
   const esc = s =&gt; String(s).replace(/[&amp;&lt;&gt;&quot;]/g, c =&gt; ({ &#x27;&amp;&#x27;: &#x27;&amp;amp;&#x27;, &#x27;&lt;&#x27;: &#x27;&amp;lt;&#x27;, &#x27;&gt;&#x27;: &#x27;&amp;gt;&#x27;, &#x27;&quot;&#x27;: &#x27;&amp;quot;&#x27; })[c]);
@@ -1940,6 +1951,17 @@ function makeInfoWin({ store, top = () =&gt; 0, onClose = () =&gt; {}, onLayout 
     dockSide: () =&gt; (el.classList.contains(&#x27;show&#x27;) &amp;&amp; dock &amp;&amp; !narrow()) ? dock : null, width: () =&gt; el.offsetWidth };
 }
 
+/* Warm the browser cache with the pictures of nodes you&#x27;re likely to open next, so they show instantly. */
+const PRELOADED = new Map();
+function preloadPics(G, ids) {
+  for (const id of ids) {
+    const n = id &amp;&amp; (G.nodes[id] || G.leaves[id]);
+    if (!n || !n.i || PRELOADED.has(n.i)) continue;
+    const im = new Image(); im.decoding = &#x27;async&#x27;; im.src = n.i; PRELOADED.set(n.i, im);
+    if (PRELOADED.size &gt; 400) PRELOADED.delete(PRELOADED.keys().next().value);  // the browser cache keeps them; this just caps the list
+  }
+}
+
 /* Shared description: Wikipedia summary, picture, etymology, lineage. opts.members=false hides the example animal list. */
 function infoHTML(G, x, { noun = &#x27;animals&#x27;, members = true } = {}) {
   const esc = s =&gt; String(s).replace(/[&amp;&lt;&gt;&quot;]/g, c =&gt; ({ &#x27;&amp;&#x27;: &#x27;&amp;amp;&#x27;, &#x27;&lt;&#x27;: &#x27;&amp;lt;&#x27;, &#x27;&gt;&#x27;: &#x27;&amp;gt;&#x27;, &#x27;&quot;&#x27;: &#x27;&amp;quot;&#x27; })[c]);
@@ -2110,6 +2132,15 @@ function select(x, center) {
 function showInfo(x) {
   const sc = INFO.show(esc(nm(x)), infoHTML(G, x, { noun: GAMES.find(g =&gt; g[0] === game)[2] }));
   sc.querySelectorAll(&#x27;.crumb a&#x27;).forEach(a =&gt; a.onclick = () =&gt; reveal(a.dataset.id));
+  // preload the neighbors one arrow key or click away: parent, siblings, children, and the next nodes across the same level
+  const p = isLeaf(x) ? G.leaves[x].p : G.nodes[x].p;
+  const near = [p, ...(kids[p] || []), ...(kids[x] || [])];
+  const across = id =&gt; vert ? pos[id].x : pos[id].y;
+  if (pos[x]) {
+    const row = Object.keys(pos).filter(id =&gt; depth[id] === depth[x]).sort((a, b) =&gt; across(a) - across(b)), i = row.indexOf(x);
+    near.push(...row.slice(Math.max(0, i - 3), i + 4));
+  }
+  setTimeout(() =&gt; preloadPics(G, near), 0);
 }
 function setHeaderVar() { document.documentElement.style.setProperty(&#x27;--hdr&#x27;, document.querySelector(&#x27;header&#x27;).getBoundingClientRect().bottom + &#x27;px&#x27;); }
 const INFO = makeInfoWin({ store, top: () =&gt; document.querySelector(&#x27;header&#x27;).getBoundingClientRect().bottom,
